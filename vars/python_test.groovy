@@ -28,13 +28,14 @@ def call(String dockerRepoName, String imageName) {
             stage('Security Scan') {
                 steps {
                         sh 'pip install safety --break-system-packages'
+                        sh 'safety check' // for Python dependency scan
                     script {
                         def services = ['receiver', 'storage', 'processing', 'audit_log']
                         services.each { service ->
                             dir("${service}") {
                                 // Insert the correct commands for Python dependency scan and Docker image scan
                                 // Ensure the Docker image name and tag are correctly specified
-                                sh 'safety check' // for Python dependency scan
+                                
                                 sh "trivy image --severity HIGH,CRITICAL allenlizz/${service}:${imageName}" // for Docker image scan
                             }
                         }
