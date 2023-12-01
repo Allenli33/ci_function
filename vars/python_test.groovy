@@ -16,7 +16,7 @@ def call(String dockerRepoName, String imageName) {
                     expression { env.GIT_BRANCH == 'origin/main' }
                 }
                 steps {
-                    withCredentials([string(credentialsId: 'DockerHub', variable: 'TOKEN')]) {
+                    withCredentials([string(credentialsId: 'DokcerHub', variable: 'TOKEN')]) {
                         sh "docker login -u 'allenlizz' -p '${TOKEN}' docker.io"
                         sh "cd ${dockerRepoName}"
                         sh "docker build -t allenlizz/${dockerRepoName}:${imageName} ."
