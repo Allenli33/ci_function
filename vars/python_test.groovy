@@ -26,7 +26,7 @@ def call(dockerRepoName, imageName) {
                     withCredentials([string(credentialsId: 'DokcerHub', variable: 'TOKEN')]) {
                         sh "ls -al"
                         sh "docker login -u 'allenlizz' -p '${TOKEN}' docker.io"
-                        sh "cd ${dockerRepoName}"
+                        sh "cd ${dockerRepoName} && ls -al"
                         sh "docker build -t ${dockerRepoName}:latest --tag allenlizz/${dockerRepoName}:${imageName} ."
                         sh "docker push allenlizz/${dockerRepoName}:${imageName}"
                     }
