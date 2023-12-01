@@ -1,4 +1,4 @@
-def call(dockerRepoName, imageName) {
+def call(String dockerRepoName, String imageName) {
     pipeline {
         agent any
         parameters {
@@ -11,8 +11,23 @@ def call(dockerRepoName, imageName) {
                 }
             }
 
+            stage('Package') {
+                when {
+                    expression { env.GIT_BRANCH == 'origin/main' }
+                }
+                steps {
+                    withCredentials([string(credentialsId: 'DockerHub', variable: 'TOKEN')]) {
+                        sh "docker login -u 'allenlizz' -p '${TOKEN}' docker.io"
+                        sh "cd ${dockerRepoName}"
+                        sh "docker build -t allenlizz/${dockerRepoName}:${imageName} ."
+                        sh "docker push allenlizz/${dockerRepoName}:${imageName}"
+                    }
+                }
+            }
+
             stage('Security Scan') {
                 steps {
+                        sh 'pip install safety'
                     script {
                         def services = ['receiver', 'storage', 'processing', 'audit_log']
                         services.each { service ->
@@ -23,20 +38,6 @@ def call(dockerRepoName, imageName) {
                                 sh "trivy image --severity HIGH,CRITICAL allenlizz/${service}:${imageName}" // for Docker image scan
                             }
                         }
-                    }
-                }
-            }
-
-            stage('Package') {
-                when {
-                    expression { env.GIT_BRANCH == 'origin/main' }
-                }
-                steps {
-                    withCredentials([string(credentialsId: 'DockerHub', variable: 'TOKEN')]) {
-                        sh "docker login -u 'allenlizz' -p '${TOKEN}' docker.io"
-                        sh "cd ${dockerRepoName}"
-                        sh "docker build -t ${dockerRepoName}:latest --tag allenlizz/${dockerRepoName}:${imageName} ."
-                        sh "docker push allenlizz/${dockerRepoName}:${imageName}"
                     }
                 }
             }
