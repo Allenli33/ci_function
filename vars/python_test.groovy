@@ -33,9 +33,8 @@ def call(String dockerRepoName, String imageName) {
                         services.each { service ->
                             dir("${service}") {
                                 // Echo vulnerabilities and ignore specified ones
-                                def safetyOutput = sh(script: 'safety check --ignore-file safety-ignore.txt', returnStdout: true).trim()
+                                def safetyOutput = sh(script: 'safety check --ignore 51668 --ignore 59473 --ignore 53048', returnStdout: true).trim()
                                 echo "Safety check output for ${service}: \n${safetyOutput}"
-                               
                             }
                         }
                     }
