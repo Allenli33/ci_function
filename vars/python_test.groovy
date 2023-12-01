@@ -27,14 +27,15 @@ def call(String dockerRepoName, String imageName) {
 
             stage('Security Scan') {
                 steps {
+                       
                     script {
                         def services = ['receiver', 'storage', 'processing', 'audit_log']
                         services.each { service ->
                             dir("${service}") {
                                 // Insert the correct commands for Python dependency scan and Docker image scan
                                 // Ensure the Docker image name and tag are correctly specified
-                                sh 'curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh'
-                                sh "trivy image --severity HIGH,CRITICAL allenlizz/${service}:${imageName}" // for Docker image scan
+                                sh 'safety check' // for Python dependency scan
+                               
                             }
                         }
                     }
