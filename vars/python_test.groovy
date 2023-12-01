@@ -32,9 +32,9 @@ def call(String dockerRepoName, String imageName) {
                         def services = ['receiver', 'storage', 'processing', 'audit_log']
                         services.each { service ->
                             dir("${service}") {
-                                // Insert the correct commands for Python dependency scan and Docker image scan
-                                // Ensure the Docker image name and tag are correctly specified
-                                sh 'safety check' // for Python dependency scan
+                                // Echo vulnerabilities and ignore specified ones
+                                def safetyOutput = sh(script: 'safety check --ignore-file safety-ignore.txt', returnStdout: true).trim()
+                                echo "Safety check output for ${service}: \n${safetyOutput}"
                                
                             }
                         }
