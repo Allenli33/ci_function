@@ -1,5 +1,5 @@
 // Define a function that encapsulates your pipeline logic
-def call() {
+def call(dockerRepoName, imageName) {
     pipeline {
         agent any
         parameters {
@@ -12,27 +12,34 @@ def call() {
                 }
             }
 
-            // Uncomment and modify the following stages according to your requirements
-            /*
-            stage('Security') {
-                steps {
-                    // Security steps go here
-                }
-            }
+            
+            // stage('Security') {
+            //     steps {
+            //         // Security steps go here
+            //     }
+            // }
             stage('Package') {
-                steps {
-                    // Package steps go here
-                }
-            }
-            stage('Deploy') {
                 when {
-                    expression { params.DEPLOY }
+                    expression { env.GIT_BRANCH == 'origin/main' }
                 }
                 steps {
-                    // Deploy steps go here
+                    withCredentials([string(credentialsId: 'DokcerHub', variable: 'TOKEN')]) {
+                        sh "docker login -u 'allenlizz' -p '${TOKEN}' docker.io"
+                        sh "docker build -t ${dockerRepoName}:latest --tag allenlizz/${dockerRepoName}:${imageName} ."
+                        sh "docker push allenlizz/${dockerRepoName}:${imageName}"
+                    }
                 }
             }
-            */
+
+            // stage('Deploy') {
+            //     when {
+            //         expression { params.DEPLOY }
+            //     }
+            //     steps {
+            //         // Deploy steps go here
+            //     }
+            // }
+            
         }
     }
 }
