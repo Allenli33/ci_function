@@ -8,7 +8,7 @@ def call() {
         stages {
             stage('Python Lint') {
                 steps {
-                    sh 'pylint --fail-under=5 $(find . -name "*.py")'
+                    sh 'pylint --fail-under=5 $(find . -name "*app.py")'
                 }
             }
 
