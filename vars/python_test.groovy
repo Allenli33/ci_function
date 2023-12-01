@@ -27,7 +27,7 @@ def call(String dockerRepoName, String imageName) {
 
             stage('Security Scan') {
                 steps {
-                        sh 'pip install safety'
+                        sh 'pip install safety --break-system-packages'
                     script {
                         def services = ['receiver', 'storage', 'processing', 'audit_log']
                         services.each { service ->
