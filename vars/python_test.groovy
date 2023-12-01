@@ -8,15 +8,10 @@ def call() {
         stages {
             stage('Python Lint') {
                 steps {
-                    script {
-                        def files = findFiles(glob: '*/app.py')
-                        for (file in files) {
-                            sh "echo ${file.path}"
-                            sh "pylint --fail-under=5.0 --disable=E0401 ${file.path}"
-                        }
-                    }
+                    sh 'pylint --fail-under=5 $(find . -name "*.py")'
                 }
             }
+
             // Uncomment and modify the following stages according to your requirements
             /*
             stage('Security') {
