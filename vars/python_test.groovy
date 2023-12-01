@@ -27,7 +27,7 @@ def call(dockerRepoName, imageName) {
                         sh "ls -al"
                         sh "docker login -u 'allenlizz' -p '${TOKEN}' docker.io"
                         sh "cd ${dockerRepoName} && ls -al"
-                        sh "docker build -t ${dockerRepoName}:latest --tag allenlizz/${dockerRepoName}:${imageName} ."
+                        sh "docker build -t ${dockerRepoName}:latest --tag allenlizz/${dockerRepoName}:${imageName} ${dockerRepoName}/."
                         sh "docker push allenlizz/${dockerRepoName}:${imageName}"
                     }
                 }
