@@ -1,4 +1,3 @@
-// Define a function that encapsulates your pipeline logic
 def call(dockerRepoName, imageName) {
     pipeline {
         agent any
@@ -12,27 +11,37 @@ def call(dockerRepoName, imageName) {
                 }
             }
 
-            
-            // stage('Security') {
-            //     steps {
-            //         // Security steps go here
-            //     }
-            // }
+            stage('Security Scan') {
+                steps {
+                    script {
+                        def services = ['receiver', 'storage', 'processing', 'audit_log']
+                        services.each { service ->
+                            dir("${service}") {
+                                // Insert the correct commands for Python dependency scan and Docker image scan
+                                // Ensure the Docker image name and tag are correctly specified
+                                sh 'safety check' // for Python dependency scan
+                                sh "trivy image --severity HIGH,CRITICAL allenlizz/${service}:${imageName}" // for Docker image scan
+                            }
+                        }
+                    }
+                }
+            }
+
             stage('Package') {
                 when {
                     expression { env.GIT_BRANCH == 'origin/main' }
                 }
                 steps {
-                    withCredentials([string(credentialsId: 'DokcerHub', variable: 'TOKEN')]) {
-                        sh "ls -al"
+                    withCredentials([string(credentialsId: 'DockerHub', variable: 'TOKEN')]) {
                         sh "docker login -u 'allenlizz' -p '${TOKEN}' docker.io"
-                        sh "cd ${dockerRepoName} && ls -al"
-                        sh "docker build -t ${dockerRepoName}:latest --tag allenlizz/${dockerRepoName}:${imageName} ${dockerRepoName}/."
+                        sh "cd ${dockerRepoName}"
+                        sh "docker build -t ${dockerRepoName}:latest --tag allenlizz/${dockerRepoName}:${imageName} ."
                         sh "docker push allenlizz/${dockerRepoName}:${imageName}"
                     }
                 }
             }
 
+            // Uncomment and complete the 'Deploy' stage when needed
             // stage('Deploy') {
             //     when {
             //         expression { params.DEPLOY }
@@ -41,7 +50,6 @@ def call(dockerRepoName, imageName) {
             //         // Deploy steps go here
             //     }
             // }
-            
         }
     }
 }
