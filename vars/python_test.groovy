@@ -19,7 +19,7 @@ def call(String dockerRepoName, String imageName) {
                     withCredentials([string(credentialsId: 'DokcerHub', variable: 'TOKEN')]) {
                         sh "docker login -u 'allenlizz' -p '${TOKEN}' docker.io"
                         sh "cd ${dockerRepoName}"
-                        sh "docker build -t allenlizz/${dockerRepoName}:${imageName} ."
+                        sh "docker build -t allenlizz/${dockerRepoName}:${imageName} ${dockerRepoName}/."
                         sh "docker push allenlizz/${dockerRepoName}:${imageName}"
                     }
                 }
