@@ -1,4 +1,4 @@
-def call(String dockerRepoName, String imageName) {
+def call(String dockerRepoName, String imageName, String service) {
     pipeline {
         agent any
         // parameters {
