@@ -1,9 +1,9 @@
 def call(String dockerRepoName, String imageName) {
     pipeline {
         agent any
-        parameters {
-            booleanParam(defaultValue: false, description: 'Deploy the App', name: 'DEPLOY')
-        }
+        // parameters {
+        //     booleanParam(defaultValue: false, description: 'Deploy the App', name: 'DEPLOY')
+        // }
         stages {
             stage('Python Lint') {
                 steps {
