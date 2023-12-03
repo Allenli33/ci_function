@@ -53,7 +53,7 @@ def call(String dockerRepoName, String imageName, String serviceToScan) {
                 steps {
                         sshagent(['3855_vm']) {
                             sh """
-                                ssh -o StrictHostKeyChecking=no azureuser@allenliacit3855.eastus.cloudapp.azure.com 'docker-compose -f /home/azureuser/acit3855/acit3855_lab7/deploy_jenkins/docker-compose.yml pull && docker-compose -f /home/azureuser/acit3855/acit3855_lab7/deploy_jenkins/docker-compose.yml up -d'
+                                ssh -o StrictHostKeyChecking=no azureuser@allenliacit3855.eastus.cloudapp.azure.com 'docker-compose -f /home/azureuser/acit3855/acit3855_lab7/deploy_jenkins/docker-compose.yml pull receiver storage processing audit_log && docker-compose -f /home/azureuser/acit3855/acit3855_lab7/deploy_jenkins/docker-compose.yml up -d'
                             """
                         }
                     }
