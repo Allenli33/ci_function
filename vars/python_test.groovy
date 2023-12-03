@@ -1,6 +1,13 @@
 def call(String dockerRepoName, String imageName, String serviceToScan) {
     pipeline {
         agent any
+
+        parameters {
+        booleanParam(defaultValue: false, description: 'Deploy the App', name:
+        'DEPLOY')
+        }
+
+
         stages {
             stage('Python Lint') {
                 steps {
@@ -38,15 +45,20 @@ def call(String dockerRepoName, String imageName, String serviceToScan) {
                 }
             }
 
-            // Uncomment and complete the 'Deploy' stage when needed
-            // stage('Deploy') {
-            //     when {
-            //         expression { params.DEPLOY }
-            //     }
-            //     steps {
-            //         // Deploy steps go here
-            //     }
-            // }
+            
+            stage('Deploy') {
+                when {
+                    expression { params.DEPLOY == true }
+                }
+                steps {
+                        sshagent(['3855_vm']) {
+                            sh """
+                                ssh -o StrictHostKeyChecking=no azureuser@allenliacit3855.eastus.cloudapp.azure.com' docker-compose -f /home/azureuser/acit3855/acit3855_lab7/deploy_jenkins/ pull && docker-compose -f /home/azureuser/acit3855/acit3855_lab7/deploy_jenkins/ up -d'
+                            """
+                        }
+                    }
+                }
+
         }
     }
 }
